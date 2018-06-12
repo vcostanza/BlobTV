@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/thirdparty" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/jars" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../jfreechart-1.0.19/source" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/debugger/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/examples/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/examples/src/test/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/fontbox/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/fontbox/src/test/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/pdfbox/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/pdfbox/src/test/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/preflight/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/preflight/src/test/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/tools/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/tools/src/test/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/xmpbox/src/main/java" />
+          <root url="jar://$MODULE_DIR$/jars/pdfbox-2.0.2-src.zip!/pdfbox-2.0.2/xmpbox/src/test/java" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/jars" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>

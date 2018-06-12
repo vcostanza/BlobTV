@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_blobtv" default="compile.module.blobtv">
+  <dirname property="module.blobtv.basedir" file="${ant.file.module_blobtv}"/>
+  
+  <property name="module.jdk.home.blobtv" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.blobtv" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.blobtv" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.blobtv" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="blobtv.output.dir" value="${module.blobtv.basedir}/out/production/BlobTV"/>
+  <property name="blobtv.artifacts.dir" value="${module.blobtv.basedir}/out/artifacts/BlobTV"/>
+  <property name="blobtv.testoutput.dir" value="${module.blobtv.basedir}/out/test/BlobTV"/>
+  <property name="blobtv.home.directory" value="/home/vc/BlobTV/java"/>
+  
+  <path id="blobtv.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="blobtv.module.production.classpath">
+    <path refid="${module.jdk.classpath.blobtv}"/>
+    <fileset dir="${basedir}/jars">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="blobtv.runtime.production.module.classpath">
+    <pathelement location="${blobtv.output.dir}"/>
+    <fileset dir="${basedir}/jars">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="blobtv.module.classpath">
+    <path refid="${module.jdk.classpath.blobtv}"/>
+    <pathelement location="${blobtv.output.dir}"/>
+    <fileset dir="${basedir}/jars">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <path id="blobtv.runtime.module.classpath">
+    <pathelement location="${blobtv.testoutput.dir}"/>
+    <pathelement location="${blobtv.output.dir}"/>
+    <fileset dir="${basedir}/jars">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.blobtv">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.blobtv">
+    <patternset refid="excluded.from.module.blobtv"/>
+  </patternset>
+  
+  <path id="blobtv.module.sourcepath">
+    <dirset dir="${module.blobtv.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.blobtv" depends="compile.module.blobtv.production,compile.module.blobtv.tests" description="Compile module BlobTV"/>
+  
+  <target name="compile.module.blobtv.production" depends="register.custom.compilers" description="Compile module BlobTV; production classes">
+    <mkdir dir="${blobtv.output.dir}"/>
+    <javac2 destdir="${blobtv.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.blobtv}/javac">
+      <compilerarg line="${compiler.args.blobtv}"/>
+      <bootclasspath refid="blobtv.module.bootclasspath"/>
+      <classpath refid="blobtv.module.production.classpath"/>
+      <src refid="blobtv.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.blobtv"/>
+    </javac2>
+    
+    <copy todir="${blobtv.output.dir}">
+      <fileset dir="${module.blobtv.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.blobtv.tests" depends="register.custom.compilers,compile.module.blobtv.production" description="compile module BlobTV; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.blobtv" description="cleanup module">
+    <delete dir="${blobtv.output.dir}"/>
+    <delete dir="${blobtv.testoutput.dir}"/>
+  </target>
+
+  <target name="copy.to.btv.home" description="Copy output artifacts to BTV java directory">
+    <copy todir="${blobtv.home.directory}">
+      <fileset dir="${blobtv.artifacts.dir}"/>
+      <fileset dir="${basedir}/jars"/>
+    </copy>
+  </target>
+</project>
