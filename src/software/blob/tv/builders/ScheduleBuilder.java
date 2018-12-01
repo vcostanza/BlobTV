@@ -24,7 +24,7 @@ public class ScheduleBuilder {
 
     static {
         // Get list of shows
-        File showDir = new File(Constants.SHOW_DIR);
+        File showDir = Config.getFile("SHOW_DIR");
         SHOWS = showDir.listFiles(new FileFilter() {
             public boolean accept(File f) {
                 return f.isDirectory();
@@ -88,7 +88,7 @@ public class ScheduleBuilder {
                     || dir.getName().startsWith(show + " ("))
                 return dir;
         }
-        return new File(Constants.SHOW_DIR, show);
+        return Config.getFile("SHOW_DIR", show);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ScheduleBuilder {
         segs.setSlotSize(endMin - slot.TimeSlot);
 
         // Show information
-        ShowInfo info = new ShowInfo(new File(showDir, Constants.INFO_JS));
+        ShowInfo info = new ShowInfo(new File(showDir, Config.get("INFO_JS")));
 
         // Read in breaks
         if (info.breaks != null) {

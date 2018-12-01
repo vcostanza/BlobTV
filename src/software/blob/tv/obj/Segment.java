@@ -1,6 +1,6 @@
 package software.blob.tv.obj;
 
-import software.blob.tv.Constants;
+import software.blob.tv.Config;
 import software.blob.tv.util.Log;
 
 import java.io.File;
@@ -76,10 +76,10 @@ public class Segment {
         this.path = path;
 
         // Get show name (excluding year)
-        if (path.startsWith(Constants.SHOW_DIR)) {
+        if (path.startsWith(Config.get("SHOW_DIR"))) {
             // Need to obtain the first directory name under shows
             int s = -1, e = -1;
-            for (int i = Constants.SHOW_DIR.length(); i < path.length(); i++) {
+            for (int i = Config.get("SHOW_DIR").length(); i < path.length(); i++) {
                 char c = path.charAt(i);
                 if (s == -1 && c != File.separatorChar) {
                     s = i;

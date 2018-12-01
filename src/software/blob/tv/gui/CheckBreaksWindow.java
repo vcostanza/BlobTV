@@ -1,5 +1,6 @@
 package software.blob.tv.gui;
 
+import software.blob.tv.Config;
 import software.blob.tv.Constants;
 import software.blob.tv.obj.Playlist;
 import software.blob.tv.obj.Segment;
@@ -81,7 +82,7 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         String showName = _showName.getText().toLowerCase(Locale.US);
         if (showName.isEmpty())
             return;
-        File showDir = new File(Constants.SHOW_DIR);
+        File showDir = Config.getFile("SHOW_DIR");
         File[] shows = showDir.listFiles();
         if (shows == null)
             return;

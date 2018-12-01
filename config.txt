@@ -1,0 +1,14 @@
+# Format: KEY = VALUE
+# Use $KEY to reference value defined earlier in the config
+
+BTV_HOME = /home/vc/BlobTV
+DL_HOME = $BTV_HOME/downloads
+JAVA_DIR = $BTV_HOME/java
+SHOW_DIR = $BTV_HOME/shows
+CHANNEL_INFO = $BTV_HOME/js_shared/channels/channels.js
+CHANNEL_SCHEDS_DIR = $BTV_HOME/js_shared/scheds/
+CHANNEL_PLAYLISTS_DIR = $BTV_HOME/js/channels/
+LOGO_COLORS = $BTV_HOME/js_shared/logo_colors.js
+INFO_JS = info.js
+DUR_JS = durations.js
+STARTS_JS = starts.js

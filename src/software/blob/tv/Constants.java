@@ -3,20 +3,9 @@ package software.blob.tv;
 import java.awt.*;
 
 /**
- * Fixed paths and file names
+ * Miscellaneous constants
  */
 public class Constants {
-    public static final String BTV_HOME = "/home/vc/BlobTV";
-    public static final String DL_HOME = BTV_HOME + "/downloads";
-    public static final String JAVA_DIR = BTV_HOME + "/java";
-    public static final String SHOW_DIR = BTV_HOME + "/shows";
-    public static final String CHANNEL_INFO = BTV_HOME + "/js_shared/channels/channels.js";
-    public static final String CHANNEL_SCHEDS_DIR = BTV_HOME + "/js_shared/scheds/";
-    public static final String CHANNEL_PLAYLISTS_DIR = BTV_HOME + "/js/channels/";
-    public static final String LOGO_COLORS = BTV_HOME + "/js_shared/logo_colors.js";
-    public static final String INFO_JS = "info.js";
-    public static final String DUR_JS = "durations.js";
-    public static final String STARTS_JS = "starts.js";
 
     // GUI
     public static final Color BG1 = new Color(0xFF111122);

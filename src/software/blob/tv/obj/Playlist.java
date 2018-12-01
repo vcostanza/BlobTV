@@ -2,7 +2,7 @@ package software.blob.tv.obj;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import software.blob.tv.Constants;
+import software.blob.tv.Config;
 import software.blob.tv.util.FileUtils;
 import software.blob.tv.util.Log;
 import software.blob.tv.util.MathUtils;
@@ -70,15 +70,15 @@ public class Playlist extends ArrayList<Segment> {
             return;
 
         // Durations
-        File durFile = new File(dir, Constants.DUR_JS);
+        File durFile = new File(dir, Config.get("DUR_JS"));
         JsonObject durs = FileUtils.loadJSON(durFile).getAsJsonObject();
 
         // Stream start times (required by ffplay or everything is off)
-        File startFile = new File(dir, Constants.STARTS_JS);
+        File startFile = new File(dir, Config.get("STARTS_JS"));
         JsonObject starts = FileUtils.loadJSON(startFile).getAsJsonObject();
 
         // Show information
-        File infoFile = new File(dir, Constants.INFO_JS);
+        File infoFile = new File(dir, Config.get("INFO_JS"));
         ShowInfo info = null;
         if(infoFile.exists())
             info = new ShowInfo(infoFile);
@@ -94,7 +94,7 @@ public class Playlist extends ArrayList<Segment> {
     }
 
     public Playlist(String showDir) {
-        this(new File(Constants.SHOW_DIR, showDir));
+        this(Config.getFile("SHOW_DIR", showDir));
     }
 
     public Playlist(Playlist segs, String[] episodes) {
@@ -551,9 +551,10 @@ public class Playlist extends ArrayList<Segment> {
      * @return Playlist as JSON string
      */
     public String toJsonString() {
+        String homeDir = Config.get("BTV_HOME") + File.separator;
         Gson gs = new Gson();
         return gs.toJson(this)
                 .replaceAll("},", "},\n")
-                .replaceAll(Constants.BTV_HOME + File.separator, "");
+                .replaceAll(homeDir, "");
     }
 }

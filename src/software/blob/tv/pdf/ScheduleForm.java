@@ -17,6 +17,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import software.blob.tv.Config;
 import software.blob.tv.obj.*;
 import software.blob.tv.Constants;
 import software.blob.tv.util.FileUtils;
@@ -59,7 +60,7 @@ public final class ScheduleForm
 
     public ScheduleForm(ChannelInfo chanInfo, LogoColors colors) {
         this(chanInfo, null, Schedule.load(chanInfo.schedule), colors);
-        File playlist = new File(Constants.CHANNEL_PLAYLISTS_DIR, chanInfo.playlist);
+        File playlist = Config.getFile("CHANNEL_PLAYLISTS_DIR", chanInfo.playlist);
         try {
             Gson gs = new Gson();
             _playlist = gs.fromJson(FileUtils.loadJSON(playlist), Playlist.class);
@@ -88,7 +89,7 @@ public final class ScheduleForm
         PDPage page = new PDPage(pageRect);
         doc.addPage(page);
 
-        PDImageXObject logo = PDImageXObject.createFromFile(Constants.BTV_HOME + "/i/btv_full.png", doc);
+        PDImageXObject logo = PDImageXObject.createFromFile(Config.get("BTV_HOME") + "/i/btv_full.png", doc);
 
         PDPageContentStream stream = new PDPageContentStream(doc, page,
                 PDPageContentStream.AppendMode.APPEND, false);
@@ -185,7 +186,7 @@ public final class ScheduleForm
 
         // Save and close the filled out form
         sdf = new SimpleDateFormat("yyyy-MM-dd");
-        File outDir = new File(Constants.DL_HOME, "channel_" + _chanInfo.number);
+        File outDir = Config.getFile("DL_HOME", "channel_" + _chanInfo.number);
         if (!outDir.exists() && !outDir.mkdirs())
             Log.e(TAG, "Failed to create output directory: " + outDir);
         File outFile = new File(outDir, "Schedule_CH"
@@ -197,8 +198,8 @@ public final class ScheduleForm
     }
 
     public static void main(String[] args) throws IOException {
-        ChannelInfo[] channels = ChannelInfo.parseChannelList(new File(Constants.CHANNEL_INFO));
-        LogoColors colors = LogoColors.load(new File(Constants.LOGO_COLORS));
+        ChannelInfo[] channels = ChannelInfo.parseChannelList(Config.getFile("CHANNEL_INFO"));
+        LogoColors colors = LogoColors.load(Config.getFile("LOGO_COLORS"));
         for (ChannelInfo ci : channels) {
             ScheduleForm form = new ScheduleForm(ci, colors);
             form.generate();

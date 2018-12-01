@@ -22,6 +22,7 @@ public class CLInterface {
     private static final String TAG = "CLInterface";
 
     public static void main(String[] args) {
+        Config.load(new File("config.txt"));
         if(args.length == 0) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -34,8 +35,8 @@ public class CLInterface {
     }
 
     public static void genRandomSched() {
-        ChannelInfo[] cInfos = ChannelInfo.parseChannelList(new File(Constants.CHANNEL_INFO));
-        LogoColors colors = LogoColors.load(new File(Constants.LOGO_COLORS));
+        ChannelInfo[] cInfos = ChannelInfo.parseChannelList(Config.getFile("CHANNEL_INFO"));
+        LogoColors colors = LogoColors.load(Config.getFile("LOGO_COLORS"));
         Map<Integer, Channel> channels = new HashMap<Integer, Channel>();
 
         for(ChannelInfo c : cInfos) {
@@ -49,7 +50,7 @@ public class CLInterface {
                 double[] gaps = pl.getMaxGaps();
                 Log.d(TAG, "Min gap: " + gaps[0] + ", Max gap: " + gaps[1]);
 
-                FileUtils.writeToFile(new File(Constants.CHANNEL_PLAYLISTS_DIR, c.playlist),
+                FileUtils.writeToFile(Config.getFile("CHANNEL_PLAYLISTS_DIR", c.playlist),
                         pl.toJsonString());
                 continue;
             }
@@ -83,7 +84,7 @@ public class CLInterface {
             channels.put(c.number, new Channel(c, sched, pl));
 
             // Write out JSON file
-            FileUtils.writeToFile(new File(Constants.CHANNEL_PLAYLISTS_DIR, c.playlist),
+            FileUtils.writeToFile(Config.getFile("CHANNEL_PLAYLISTS_DIR", c.playlist),
                     pl.toJsonString());
 
             // Generate schedule PDF
