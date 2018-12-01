@@ -2,9 +2,7 @@ package software.blob.tv;
 
 import software.blob.tv.util.Log;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +18,13 @@ public class Config {
     static void load(File config) {
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(config));
+            if (config.exists())
+                // Read from local file
+                br = new BufferedReader(new FileReader(config));
+            else
+                // Attempt to read from JAR
+                br = new BufferedReader(new InputStreamReader(Config.class.getClassLoader()
+                        .getResourceAsStream(config.getName())));
 
             String line;
             while ((line = br.readLine()) != null) {
