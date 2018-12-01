@@ -19,16 +19,6 @@ public abstract class SlotBuilder {
     protected ShowInfo _info;
     protected ChannelInfo _channel;
 
-    private static final Playlist _plCommercials;
-    private static final Playlist _plStationIDs;
-
-    static {
-        _plStationIDs = new Playlist("Station IDs");
-        _plStationIDs.sortByDuration();
-        _plCommercials = new Playlist("Commercials");
-        _plCommercials.sortByDuration();
-    }
-
     protected SlotBuilder(Playlist segs, ShowInfo info, ChannelInfo channel) {
         _segs = segs;
         _info = info;
@@ -67,7 +57,7 @@ public abstract class SlotBuilder {
             pl.add(0.0, _channel.bumps.getRandomSegment(pl.getDeadAir()));
 
         // Insert station id (if we can)
-        Segment stationId = _plStationIDs.getRandomSegment(pl.getDeadAir());
+        Segment stationId = _channel.stationIds.getRandomSegment(pl.getDeadAir());
         if(stationId != null)
             pl.add(0.0, stationId);
 
@@ -110,7 +100,7 @@ public abstract class SlotBuilder {
             return;
 
         // Get a bunch of random commercials
-        Playlist commList = new Playlist(_plCommercials);
+        Playlist commList = new Playlist(_channel.commercials);
         List<Playlist> comms = new ArrayList<Playlist>(numBreaks);
         double deadAir = pl.getDeadAir();
         double remTime = deadAir;

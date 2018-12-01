@@ -246,8 +246,8 @@ public class Playlist extends ArrayList<Segment> {
     public void copy(Playlist other) {
         clear();
         if(other != null) {
-            for(Segment s : other)
-                add(new Segment(s));
+            addAll(other);
+            this._sortedByDuration = other._sortedByDuration;
         }
     }
 

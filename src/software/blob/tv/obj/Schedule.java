@@ -7,6 +7,7 @@ import software.blob.tv.util.MathUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -47,7 +48,7 @@ public class Schedule extends ArrayList<ScheduleSlot> {
                 ss_copy.TimeSlot = (int) MathUtils.modRange(ss_copy.TimeSlot + offsetMins, 1440);
                 copy.add(ss_copy);
             }
-            copy.sort(TIME_COMPARATOR);
+            Collections.sort(copy, TIME_COMPARATOR);
             return copy;
         }
         return null;

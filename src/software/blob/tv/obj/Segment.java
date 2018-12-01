@@ -1,5 +1,6 @@
 package software.blob.tv.obj;
 
+import software.blob.tv.Constants;
 import software.blob.tv.util.Log;
 
 import java.io.File;
@@ -75,7 +76,25 @@ public class Segment {
         this.path = path;
 
         // Get show name (excluding year)
-        show = vid.getParentFile().getName();
+        if (path.startsWith(Constants.SHOW_DIR)) {
+            // Need to obtain the first directory name under shows
+            int s = -1, e = -1;
+            for (int i = Constants.SHOW_DIR.length(); i < path.length(); i++) {
+                char c = path.charAt(i);
+                if (s == -1 && c != File.separatorChar) {
+                    s = i;
+                } else if (s != -1 && c == File.separatorChar) {
+                    e = i;
+                    break;
+                }
+            }
+            if (s > -1 && e > -1)
+                show = path.substring(s, e);
+        }
+        if (show == null || show.isEmpty())
+            show = vid.getParentFile().getName(); // Fallback
+
+        // Exclude year the show started
         if (show.contains(" (") && show.endsWith(")"))
             show = show.substring(0, show.indexOf(" ("));
 
