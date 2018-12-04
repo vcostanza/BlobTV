@@ -8,7 +8,7 @@ import java.io.File;
 /**
  * Video segment (episode, commercial, interstitial, bumper)
  */
-public class Segment {
+public class Segment implements Comparable<Segment> {
 
     private static final String TAG = "Segment";
 
@@ -34,7 +34,7 @@ public class Segment {
         }
     }
     public enum EpisodeType {
-        INVALID, NORMAL, SPECIAL, PILOT
+        NORMAL, SPECIAL, PILOT
     }
 
     // Path to video, show name, and title
@@ -60,10 +60,10 @@ public class Segment {
 
     // EPISODE SPECIFIC
     // Episode number, season number, and episode part (1a = 1, 1b = 2, etc.)
-    public int episode, season;
-    public char part = 0;
+    public Integer episode, season;
+    public Character part;
     // Episode type
-    public EpisodeType epType = EpisodeType.INVALID;
+    public EpisodeType epType;
 
     public Segment() {
     }
@@ -150,7 +150,7 @@ public class Segment {
                         epType = EpisodeType.NORMAL;
                     } catch(Exception e) {
                         Log.e(TAG, "Illegal video tag: " + tag);
-                        epType = EpisodeType.INVALID;
+                        epType = null;
                     }
             }
             title = title.substring(title.indexOf(") ") + 2).replace("; ", " / ");
@@ -228,5 +228,28 @@ public class Segment {
             durType = "minutes";
         }
         return String.format("%s\n%s\n%1.0f %s", format, title, dur, durType);
+    }
+
+    @Override
+    public int compareTo(Segment o) {
+        if (this.format != Segment.Format.SHOW || o.format != Segment.Format.SHOW)
+            return this.name.compareTo(o.name);
+        int tComp = this.epType != null && o.epType != null ? this.epType.compareTo(o.epType)
+                : (this.epType != null ? 1 : (o.epType != null ? -1 : 0));
+        int sComp = this.season != null && o.season != null ? Integer.compare(this.season, o.season)
+                : (this.season != null ? 1 : (o.season != null ? -1 : 0));
+        int eComp = this.episode != null && o.episode != null ? Integer.compare(this.episode, o.episode)
+                : (this.episode != null ? 1 : (o.episode != null ? -1 : 0));
+        int pComp = this.part != null && o.part != null ? Character.compare(this.part, o.part)
+                : (this.part != null ? 1 : (o.part != null ? -1 : 0));
+        if (tComp == 0) {
+            if (sComp == 0) {
+                if (eComp == 0)
+                    return pComp;
+                return eComp;
+            }
+            return sComp;
+        }
+        return tComp;
     }
 }

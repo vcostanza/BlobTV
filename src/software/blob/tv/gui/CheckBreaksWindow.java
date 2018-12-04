@@ -110,31 +110,19 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         try {
             _curInfo = new ShowInfo(infoFile);
         } catch (Exception e) {
+            Log.e(TAG, "Failed to parse info file:" + infoFile);
             _curInfo = null;
             return;
         }
+        if (_curInfo.breaks == null) {
+            Log.e(TAG, "Show \"" + show.getName() + "\" has no breaks defined.");
+            return;
+        }
+
         // Load segments
         Playlist epList = new Playlist(show);
-        Collections.sort(epList, new Comparator<Segment>() {
-            @Override
-            public int compare(Segment o1, Segment o2) {
-                if (o1.format != Segment.Format.SHOW || o2.format != Segment.Format.SHOW)
-                    return o1.name.compareTo(o2.name);
-                int tComp = o1.epType.compareTo(o2.epType);
-                int sComp = Integer.compare(o1.season, o2.season);
-                int eComp = Integer.compare(o1.episode, o2.episode);
-                int pComp = Character.compare(o1.part, o2.part);
-                if (tComp == 0) {
-                    if (sComp == 0) {
-                        if (eComp == 0)
-                            return pComp;
-                        return eComp;
-                    }
-                    return sComp;
-                }
-                return tComp;
-            }
-        });
+        Collections.sort(epList);
+
         // Update list
         List<String> eps = new ArrayList<String>();
         for (Segment s : epList) {
