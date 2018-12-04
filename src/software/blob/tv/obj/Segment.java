@@ -71,6 +71,7 @@ public class Segment {
     // Derive segment information based on path
     public Segment(String path) {
         File vid = new File(path);
+        String dirName = vid.getParentFile().getName();
         /*if(!vid.exists())
             Log.w(TAG, "Video file does not exist " + path);*/
         this.path = path;
@@ -92,7 +93,7 @@ public class Segment {
                 show = path.substring(s, e);
         }
         if (show == null || show.isEmpty())
-            show = vid.getParentFile().getName(); // Fallback
+            show = dirName; // Fallback
 
         // Exclude year the show started
         if (show.contains(" (") && show.endsWith(")"))
@@ -101,7 +102,7 @@ public class Segment {
         // Determine segment format
         if (show.equals("Commercials"))
             format = Format.COMMERCIAL;
-        else if (show.equals("Break Bumpers"))
+        else if (dirName.equals("Break Bumpers"))
             format = Format.BREAK_BUMPER;
         else if (show.endsWith("Bumps"))
             format = Format.SCHED_BUMPER;
