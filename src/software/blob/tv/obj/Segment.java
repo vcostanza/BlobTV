@@ -218,8 +218,14 @@ public class Segment implements Comparable<Segment> {
     @Override
     public String toString() {
         if(format == Format.SHOW) {
-            return String.format("%s\n(S%dE%d%s) %s\n%d minutes", show, season,
-                    episode, (part != 0 ? part : ""), title, getDurationMins());
+            if (episode != null) {
+                if (season != null)
+                    return String.format("%s\n(S%dE%d%s) %s\n%d minutes", show, season,
+                            episode, (part != 0 ? part : ""), title, getDurationMins());
+                else
+                    return String.format("%s\n(%d) %s\n%d minutes", show, episode, title, getDurationMins());
+            } else
+                return String.format("%s\n%s\n%d minutes", show, title, getDurationMins());
         }
         double dur = getDuration();
         String durType = "seconds";

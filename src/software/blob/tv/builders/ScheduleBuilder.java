@@ -108,6 +108,7 @@ public class ScheduleBuilder {
             if (s != null) {
                 pl.add(Playlist.MAX_SECS - remTime, s);
                 remTime -= s.getDuration();
+                segsW.remove(s);
             } else
                 break;
         }
