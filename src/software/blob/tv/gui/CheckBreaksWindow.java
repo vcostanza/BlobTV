@@ -24,9 +24,9 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
 
     private static final String TAG = "CheckBreaksWindow";
 
-    private JTextField _showName;
-    private JList _breakList;
-    private BlobCheckBox _introCB, _midsCB, _creditsCB;
+    private final JTextField _showName;
+    private final JList _breakList;
+    private final BlobCheckBox _introCB, _midsCB, _creditsCB;
     private ShowInfo _curInfo;
 
     public CheckBreaksWindow() {
@@ -154,13 +154,20 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
                         key.startsWith("episode_") && !_midsCB.isSelected() || key.startsWith("episode_a"))
                     continue;
                 double breakTime = br.get(key);
+                double startTime = Math.max(0, breakTime - 1);
+                double endTime = breakTime + 4;
                 Log.d(TAG, key + ": " + breakTime);
                 try {
-                    String[] cmd = new String[] { "mpv", "--osd-fractions", "--start",
-                            String.valueOf(breakTime-1), "--end", String.valueOf(breakTime+4),
-                            "--title", epName + " -> " + key + ": " + breakTime,
+                    String[] cmd = new String[] { "mpv", "--osd-fractions",
+                            "--start=" + startTime,
+                            "--end=" + endTime,
+                            "--title=\"" + epName + " -> " + key + ": " + breakTime + "\"",
                             _curInfo.getShowDir() + File.separator + epName + ".mp4"};
                     Process p = Runtime.getRuntime().exec(cmd);
+                    StringBuilder sb = new StringBuilder();
+                    for (String c : cmd)
+                        sb.append(c).append(" ");
+                    System.out.println(sb);
                     p.waitFor();
                 } catch (Exception exc) {
                     Log.e(TAG, "Error: ", exc);
