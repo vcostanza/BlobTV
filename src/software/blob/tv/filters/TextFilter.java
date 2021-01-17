@@ -79,8 +79,8 @@ public class TextFilter extends PositionFilter {
         ret.color = this.color;
         ret.borderColor = this.borderColor;
         ret.borderWidth = this.borderWidth;
-        ret.fadeIn = Arrays.copyOf(this.fadeIn, 2);
-        ret.fadeOut = Arrays.copyOf(this.fadeOut, 2);
+        ret.fadeIn = this.fadeIn != null ? Arrays.copyOf(this.fadeIn, 2) : null;
+        ret.fadeOut = this.fadeOut != null ? Arrays.copyOf(this.fadeOut, 2) : null;
         return ret;
     }
 
