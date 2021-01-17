@@ -23,8 +23,8 @@ public class PlaylistDataset implements PieDataset {
 
     public PlaylistDataset(Playlist playlist) {
         Playlist pl = new Playlist(playlist);
-        _results = new HashMap<String, Integer>();
-        _keys = new ArrayList<String>();
+        _results = new HashMap<>();
+        _keys = new ArrayList<>();
 
         while (!pl.isEmpty()) {
             String key = "";
@@ -42,14 +42,14 @@ public class PlaylistDataset implements PieDataset {
             }
             if (key.isEmpty() || occurences <= 5)
                 key = "Other";
-            _results.put(key, occurences + (_results.containsKey(key) ? _results.get(key) : 0));
+            _results.put(key, occurences + _results.getOrDefault(key, 0));
             if (!_keys.contains(key))
                 _keys.add(key);
         }
     }
 
     @Override
-    public Comparable getKey(int index) {
+    public Comparable<String> getKey(int index) {
         return _keys.get(index);
     }
 
@@ -59,7 +59,7 @@ public class PlaylistDataset implements PieDataset {
     }
 
     @Override
-    public List getKeys() {
+    public List<String> getKeys() {
         return _keys;
     }
 

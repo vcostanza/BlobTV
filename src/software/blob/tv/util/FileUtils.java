@@ -7,7 +7,6 @@ import com.google.gson.JsonStreamParser;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 
 /**
  * Common utilities for file checking and loading
@@ -57,41 +56,23 @@ public class FileUtils {
     public static JsonElement loadJSON(File jsonFile) {
         JsonObject jo = new JsonObject();
         if(readableFile(jsonFile, true)) {
-            FileReader fr = null;
-            try {
-                fr = new FileReader(jsonFile);
+            try (FileReader fr = new FileReader(jsonFile)) {
                 JsonStreamParser jsp = new JsonStreamParser(fr);
-                if(jsp.hasNext())
+                if (jsp.hasNext())
                     return jsp.next();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Failed to parse JSON file " + jsonFile, e);
-            } finally {
-                if(fr != null) {
-                    try {
-                        fr.close();
-                    } catch(Exception e) {}
-                }
             }
         }
         return jo;
     }
 
     public static boolean writeToFile(File output, String content) {
-        if(output.exists())
-            output.delete();
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(output);
+        try (FileWriter fw = new FileWriter(output)) {
             fw.write(content);
-        } catch(Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error writing to file: " + output, e);
             return false;
-        } finally {
-            if(fw != null) {
-                try {
-                    fw.close();
-                } catch(IOException e) {}
-            }
         }
         return true;
     }

@@ -24,38 +24,26 @@ public class BuilderGUI extends JPanel {
 
         final BlobButton genSched = new BlobButton("Generate Schedule");
         add(genSched);
-        genSched.setOnClick(new Runnable() {
-            public void run() {
-                genSched.setText("Generating...");
-                genSched.setEnabled(false);
-                Thread thr = new Thread() {
-                    public void start() {
-                        CLInterface.genRandomSched();
-                        genSched.setEnabled(true);
-                        genSched.setText("Generate Schedule");
-                    }
-                };
-                thr.start();
-            }
+        genSched.setOnClick(() -> {
+            genSched.setText("Generating...");
+            genSched.setEnabled(false);
+            Thread thr = new Thread() {
+                public void start() {
+                    CLInterface.genRandomSched();
+                    genSched.setEnabled(true);
+                    genSched.setText("Generate Schedule");
+                }
+            };
+            thr.start();
         });
 
         final BlobButton checkBreaks = new BlobButton("Check Breaks");
         add(checkBreaks);
-        checkBreaks.setOnClick(new Runnable() {
-            @Override
-            public void run() {
-                openBreaksWindow();
-            }
-        });
+        checkBreaks.setOnClick(this::openBreaksWindow);
 
         final BlobButton commGraph = new BlobButton("Commercial Graph");
         add(commGraph);
-        commGraph.setOnClick(new Runnable() {
-            @Override
-            public void run() {
-                graphCommercials();
-            }
-        });
+        commGraph.setOnClick(this::graphCommercials);
     }
 
     @Override

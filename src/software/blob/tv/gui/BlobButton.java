@@ -1,7 +1,5 @@
 package software.blob.tv.gui;
 
-import software.blob.tv.util.Log;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;

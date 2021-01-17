@@ -7,7 +7,6 @@ import software.blob.tv.util.MathUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -17,11 +16,7 @@ public class Schedule extends ArrayList<ScheduleSlot> {
 
     private static final String TAG = "Schedule";
 
-    private static final Comparator<ScheduleSlot> TIME_COMPARATOR = new Comparator<ScheduleSlot>() {
-        public int compare(ScheduleSlot s1, ScheduleSlot s2) {
-            return Double.compare(s1.TimeSlot, s2.TimeSlot);
-        }
-    };
+    private static final Comparator<ScheduleSlot> TIME_COMPARATOR = Comparator.comparingDouble(s -> s.TimeSlot);
 
     public static Schedule load(File schedFile) {
         if (schedFile != null && schedFile.exists()) {
@@ -48,7 +43,7 @@ public class Schedule extends ArrayList<ScheduleSlot> {
                 ss_copy.TimeSlot = (int) MathUtils.modRange(ss_copy.TimeSlot + offsetMins, 1440);
                 copy.add(ss_copy);
             }
-            Collections.sort(copy, TIME_COMPARATOR);
+            copy.sort(TIME_COMPARATOR);
             return copy;
         }
         return null;
@@ -60,7 +55,7 @@ public class Schedule extends ArrayList<ScheduleSlot> {
      */
     public void readEpisodes(Playlist pl) {
         for (ScheduleSlot ss : this)
-            ss.Episodes = new ArrayList<String>();
+            ss.Episodes = new ArrayList<>();
         for (Segment s : pl) {
             ScheduleSlot match = findShow(s);
             if (match != null)

@@ -34,15 +34,8 @@ public class Log {
 
     private static void log(String tag, String msg, Throwable e, String type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        StringBuilder output = new StringBuilder(sdf.format(System.currentTimeMillis()));
-        output.append(" / ");
-        output.append(tag);
-        output.append(" [");
-        output.append(type.charAt(0));
-        output.append("]: ");
-        output.append(msg);
         PrintStream stream = type.equals("ERROR") ? System.err : System.out;
-        stream.println(output);
+        stream.println(sdf.format(System.currentTimeMillis()) + " / " + tag + " [" + type.charAt(0) + "]: " + msg);
         if(e != null)
             e.printStackTrace(stream);
     }

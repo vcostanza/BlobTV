@@ -227,7 +227,7 @@ public abstract class SlotBuilder {
 
         // Get a bunch of random commercials
         Playlist commList = new Playlist(_channel.commercials);
-        List<Playlist> comms = new ArrayList<Playlist>(numBreaks);
+        List<Playlist> comms = new ArrayList<>(numBreaks);
         double deadAir = pl.getDeadAir();
         double remTime = deadAir;
         int i = 0;

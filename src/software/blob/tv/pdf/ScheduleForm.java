@@ -232,7 +232,7 @@ public final class ScheduleForm
      * @param colX Left bound of column
      * @param colWidth Width of column
      * @param lineCount Number of lines allowed
-     * @throws IOException
+     * @throws IOException Failed to set font
      */
     private static void drawTableLine(PDPageContentStream stream, String txt,
                                PDFont font, float rowY, float rowHeight, float colX,
@@ -271,11 +271,11 @@ public final class ScheduleForm
      * @param fontSize Size of font in pt
      * @param maxWidth Max width for wrapping
      * @return Each line of text
-     * @throws IOException
+     * @throws IOException Failed to get text width
      */
     private static String[] wrapText(PDFont font, String txt,
                                      int fontSize, float maxWidth) throws IOException {
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         String[] words = txt.split(" ");
         StringBuilder sb = new StringBuilder();
         int i = 0;
@@ -299,6 +299,6 @@ public final class ScheduleForm
         }
         if (!sb.toString().isEmpty())
             lines.add(sb.toString());
-        return lines.toArray(new String[lines.size()]);
+        return lines.toArray(new String[0]);
     }
 }

@@ -6,8 +6,6 @@ import software.blob.tv.util.Log;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Create 24-hour playlist in JSON
@@ -20,16 +18,12 @@ public class ScheduleBuilder {
 
     private final ChannelInfo _channel;
     private final Schedule _sched;
-    private boolean _valid = false;
+    private boolean _valid;
 
     static {
         // Get list of shows
         File showDir = Config.getFile("SHOW_DIR");
-        SHOWS = showDir.listFiles(new FileFilter() {
-            public boolean accept(File f) {
-                return f.isDirectory();
-            }
-        });
+        SHOWS = showDir.listFiles(File::isDirectory);
     }
 
     /**
@@ -124,7 +118,7 @@ public class ScheduleBuilder {
         if (slot.Episode != null)
             epNames = new String[] { slot.Episode };
         else if (slot.Episodes != null)
-            epNames = slot.Episodes.toArray(new String[slot.Episodes.size()]);
+            epNames = slot.Episodes.toArray(new String[0]);
         if (epNames != null)
             segs.setMetaStringArray("episodes", epNames);
 

@@ -24,11 +24,7 @@ public class CLInterface {
     public static void main(String[] args) {
         Config.load(new File("config.txt"));
         if(args.length == 0) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    showGUI();
-                }
-            });
+            SwingUtilities.invokeLater(CLInterface::showGUI);
         } else {
             genRandomSched();
         }
@@ -37,7 +33,7 @@ public class CLInterface {
     public static void genRandomSched() {
         ChannelInfo[] cInfos = ChannelInfo.parseChannelList(Config.getFile("CHANNEL_INFO"));
         LogoColors colors = LogoColors.load(Config.getFile("LOGO_COLORS"));
-        Map<Integer, Channel> channels = new HashMap<Integer, Channel>();
+        Map<Integer, Channel> channels = new HashMap<>();
 
         for(ChannelInfo c : cInfos) {
             Playlist pl;

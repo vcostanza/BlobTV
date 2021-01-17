@@ -5,6 +5,7 @@ import software.blob.tv.util.Log;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * User-defined file paths and names
@@ -13,7 +14,7 @@ public class Config {
 
     private static final String TAG = "Config";
 
-    private static final Map<String, String> _data = new HashMap<String, String>();
+    private static final Map<String, String> _data = new HashMap<>();
 
     static void load(File config) {
         BufferedReader br = null;
@@ -23,8 +24,8 @@ public class Config {
                 br = new BufferedReader(new FileReader(config));
             else
                 // Attempt to read from JAR
-                br = new BufferedReader(new InputStreamReader(Config.class.getClassLoader()
-                        .getResourceAsStream(config.getName())));
+                br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Config.class.getClassLoader()
+                        .getResourceAsStream(config.getName()))));
 
             String line;
             while ((line = br.readLine()) != null) {

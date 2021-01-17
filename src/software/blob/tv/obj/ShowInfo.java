@@ -3,7 +3,6 @@ package software.blob.tv.obj;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import software.blob.tv.obj.Segment;
 import software.blob.tv.util.FileUtils;
 import software.blob.tv.util.Log;
 
@@ -27,7 +26,7 @@ public class ShowInfo {
     public static final String EPISODES = "Episodes";
 
     protected JsonObject _js;
-    public String showDir = "";
+    public String showDir;
     //public int runTime = 30;
     public boolean randomized = false,
             separatedEps = false;
@@ -141,8 +140,8 @@ public class ShowInfo {
                 return;
             double segDur = seg.getDuration() / maxBreaks;
             double targetTime = segDur;
-            List<Double> breaks = new ArrayList<Double>();
-            List<String> mids = new ArrayList<String>();
+            List<Double> breaks = new ArrayList<>();
+            List<String> mids = new ArrayList<>();
             for(String str : MIDS) {
                 if(has(str))
                     mids.add(str);
@@ -164,12 +163,7 @@ public class ShowInfo {
                 }
                 targetTime += segDur;
             }
-            Collections.sort(breaks, new Comparator<Double>() {
-                @Override
-                public int compare(Double d1, Double d2) {
-                    return Double.compare(d1, d2);
-                }
-            });
+            breaks.sort(Comparator.comparingDouble(d -> d));
             seg.midBreaks = new double[breaks.size()];
             for (int i = 0; i < breaks.size(); i++)
                 seg.midBreaks[i] = breaks.get(i);

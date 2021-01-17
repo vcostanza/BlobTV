@@ -34,7 +34,7 @@ public class SESlotBuilder extends SlotBuilder {
             if (attempts == 0 && _segs.hasMetaValue("episodes")) {
                 Playlist eps = new Playlist(_segs, _segs
                         .getMetaStringArray("episodes", null));
-                segSet = eps.toArray(new Segment[eps.size()]);
+                segSet = eps.toArray(new Segment[0]);
             } else
                 segSet = findSegments(epSet);
             invalidSet = false;

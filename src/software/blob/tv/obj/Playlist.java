@@ -21,27 +21,15 @@ public class Playlist extends ArrayList<Segment> {
     private static final String TAG = "Playlist";
     public static final int MAX_SECS = 86400;
 
-    private static final FileFilter MP4_FILTER = new FileFilter() {
-        public boolean accept(File f) {
-            return f.isFile() && f.getName().endsWith(".mp4");
-        }
-    };
+    private static final FileFilter MP4_FILTER = f -> f.isFile() && f.getName().endsWith(".mp4");
 
-    private static final Comparator<Segment> DUR_COMPARATOR = new Comparator<Segment>() {
-        public int compare(Segment s1, Segment s2) {
-            return Double.compare(s1.getDuration(), s2.getDuration());
-        }
-    };
+    private static final Comparator<Segment> DUR_COMPARATOR = Comparator.comparingDouble(Segment::getDuration);
 
-    private static final Comparator<Segment> TIME_COMPARATOR = new Comparator<Segment>() {
-        public int compare(Segment s1, Segment s2) {
-            return Double.compare(s1.startTime, s2.startTime);
-        }
-    };
+    private static final Comparator<Segment> TIME_COMPARATOR = Comparator.comparingDouble(s -> s.startTime);
 
     private static final Map<File, Playlist> _showCache = new HashMap<>();
 
-    private final Map<String, Object> _data = new HashMap<String, Object>();
+    private final Map<String, Object> _data = new HashMap<>();
     private boolean _sortedByDuration = false;
     private int _slotSize = 0;
 
@@ -236,14 +224,14 @@ public class Playlist extends ArrayList<Segment> {
      * @param simpleMethod True to push segments onto the stack
      */
     public void merge(Playlist other, boolean simpleMethod) {
-        Collections.sort(this, TIME_COMPARATOR);
+        this.sort(TIME_COMPARATOR);
         for(Segment s : other) {
             if(simpleMethod)
                 add(s);
             else
                 add(s.startTime, s);
         }
-        Collections.sort(this, TIME_COMPARATOR);
+        this.sort(TIME_COMPARATOR);
     }
 
     /**
@@ -255,6 +243,7 @@ public class Playlist extends ArrayList<Segment> {
         if(other != null) {
             addAll(other);
             this._sortedByDuration = other._sortedByDuration;
+            this._slotSize = other._slotSize;
         }
     }
 
@@ -336,7 +325,7 @@ public class Playlist extends ArrayList<Segment> {
      * @return List of matching segments
      */
     public List<Segment> findAllByFormat(Segment.Format format) {
-        List<Segment> ret = new ArrayList<Segment>();
+        List<Segment> ret = new ArrayList<>();
         for (Segment s : this) {
             if (s.format == format)
                 ret.add(s);
@@ -353,7 +342,7 @@ public class Playlist extends ArrayList<Segment> {
             s.startTime = MathUtils.modRange(s.startTime + seconds, MAX_SECS);
             s.endTime = MathUtils.modRange(s.endTime + seconds, MAX_SECS);
         }
-        Collections.sort(this, TIME_COMPARATOR);
+        this.sort(TIME_COMPARATOR);
     }
 
     /**
@@ -370,7 +359,7 @@ public class Playlist extends ArrayList<Segment> {
     public void sortByDuration() {
         if(_sortedByDuration)
             return;
-        Collections.sort(this, DUR_COMPARATOR);
+        this.sort(DUR_COMPARATOR);
         _sortedByDuration = true;
     }
 
@@ -473,7 +462,7 @@ public class Playlist extends ArrayList<Segment> {
 
     /**
      * Get number of possible breaks in this playlist
-     * @return
+     * @return Number of breaks in the playlist
      */
     public int getNumBreaks() {
         int numBreaks = 0;
@@ -549,9 +538,9 @@ public class Playlist extends ArrayList<Segment> {
         return _data.containsKey(key);
     }
 
-    private Object getMetaValue(String key, Object def, Class c) {
+    private Object getMetaValue(String key, Object def, Class<?> c) {
         Object ret = _data.get(key);
-        if (ret == null || !(c.isInstance(ret)))
+        if (!(c.isInstance(ret)))
             return def;
         return c.cast(ret);
     }

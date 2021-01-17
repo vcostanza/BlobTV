@@ -25,7 +25,7 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
     private static final String TAG = "CheckBreaksWindow";
 
     private final JTextField _showName;
-    private final JList _breakList;
+    private final JList<String> _breakList;
     private final BlobCheckBox _introCB, _midsCB, _creditsCB;
     private ShowInfo _curInfo;
 
@@ -62,7 +62,17 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         _breakList = new JList<>();
         _breakList.setForeground(Constants.TXT1);
         _breakList.setBackground(Constants.BG3);
-        _breakList.addMouseListener(_breakListClick);
+        _breakList.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() != 2)
+                    return;
+                checkBreak();
+            }
+            public void mousePressed(MouseEvent e) {}
+            public void mouseReleased(MouseEvent e) {}
+            public void mouseEntered(MouseEvent e) {}
+            public void mouseExited(MouseEvent e) {}
+        });
         _breakList.addKeyListener(this);
         JScrollPane scrollPane = new JScrollPane(_breakList);
         scrollPane.setPreferredSize(new Dimension (480, 480));
@@ -124,7 +134,7 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         Collections.sort(epList);
 
         // Update list
-        List<String> eps = new ArrayList<String>();
+        List<String> eps = new ArrayList<>();
         for (Segment s : epList) {
             String name = s.name;
             if (_curInfo.breaks.get(name) == null)
@@ -135,7 +145,7 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
             if (epList.findByName(k) == null)
                 eps.add("(MISSING) " + k);
         }
-        _breakList.setListData(eps.toArray(new String[eps.size()]));
+        _breakList.setListData(eps.toArray(new String[0]));
     }
 
     private void checkBreak() {
@@ -175,18 +185,6 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
             }
         }
     }
-
-    private final MouseListener _breakListClick = new MouseListener() {
-        public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() != 2)
-                return;
-            checkBreak();
-        }
-        public void mousePressed(MouseEvent e) {}
-        public void mouseReleased(MouseEvent e) {}
-        public void mouseEntered(MouseEvent e) {}
-        public void mouseExited(MouseEvent e) {}
-    };
 
     @Override
     public void keyTyped(KeyEvent keyEvent) {

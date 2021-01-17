@@ -17,7 +17,7 @@ public class ScheduleSlot {
         this.TimeSlot = other.TimeSlot;
         this.Show = other.Show;
         this.Episode = other.Episode;
-        this.Episodes = new ArrayList<String>(other.Episodes);
+        this.Episodes = new ArrayList<>(other.Episodes);
     }
 
     /**
@@ -44,22 +44,22 @@ public class ScheduleSlot {
 
     public void addEpisode(String name) {
         if (Episodes == null)
-            Episodes = new ArrayList<String>();
+            Episodes = new ArrayList<>();
         if (!Episodes.contains(name))
             Episodes.add(name);
     }
 
     public String getEpisodeString() {
-        String ret = "";
+        StringBuilder sb = new StringBuilder();
         for (String name : Episodes) {
             if (!name.equals("Intro") && !name.equals("Credits")
                     && !name.endsWith("_credits")) {
                 String title = name.substring(name.indexOf(") ") + 2).replace("; ", " / ");
-                if (!ret.isEmpty())
-                    ret += " / ";
-                ret += title;
+                if (sb.length() > 0)
+                    sb.append(" / ");
+                sb.append(title);
             }
         }
-        return ret;
+        return sb.toString();
     }
 }

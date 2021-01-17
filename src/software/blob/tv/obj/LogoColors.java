@@ -36,7 +36,7 @@ public class LogoColors {
     private Map<String, Color[]> _colors;
 
     public LogoColors(JsonElement colorsJs) {
-        _colors = new HashMap<String, Color[]>();
+        _colors = new HashMap<>();
         if (colorsJs != null) {
             JsonObject jo = colorsJs.getAsJsonObject();
             for (Map.Entry<String, JsonElement> map : jo.entrySet()) {

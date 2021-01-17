@@ -3,7 +3,6 @@ package software.blob.tv.obj;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import software.blob.tv.Constants;
 import software.blob.tv.builders.ScheduleBuilder;
 import software.blob.tv.util.FileUtils;
 import software.blob.tv.util.Log;
@@ -105,7 +104,7 @@ public class ChannelInfo {
      * @return Array of channel info
      */
     public static ChannelInfo[] parseChannelList(File channelsFile) {
-        List<ChannelInfo> ret = new ArrayList<ChannelInfo>();
+        List<ChannelInfo> ret = new ArrayList<>();
         if(FileUtils.readableFile(channelsFile, true)) {
             JsonArray channels = FileUtils.loadJSON(channelsFile).getAsJsonArray();
             for(JsonElement c : channels) {
