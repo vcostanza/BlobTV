@@ -1,8 +1,9 @@
 package software.blob.tv.obj;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import software.blob.tv.Config;
+import software.blob.tv.filters.FilterDeserializer;
+import software.blob.tv.filters.SegmentFilter;
 import software.blob.tv.util.FileUtils;
 import software.blob.tv.util.Log;
 import software.blob.tv.util.MathUtils;
@@ -83,8 +84,14 @@ public class Playlist extends ArrayList<Segment> {
         if(infoFile.exists())
             info = new ShowInfo(infoFile);
 
+        // Video filters
+        File filtersFile = new File(dir, Config.get("FILTERS_JS"));
+        List<SegmentFilter> filters = null;
+        if (filtersFile.exists())
+            filters = FilterDeserializer.getFilters(FileUtils.loadJSON(filtersFile));
+
         Playlist cached = new Playlist();
-        cached.makeSegments(dir.listFiles(MP4_FILTER), starts, durs, info);
+        cached.makeSegments(dir.listFiles(MP4_FILTER), starts, durs, info, filters);
         _showCache.put(dir, cached);
         copy(cached);
     }
@@ -258,8 +265,10 @@ public class Playlist extends ArrayList<Segment> {
      * @param durs Durations JSON data
      * @param info Info JSON data
      */
-    public void makeSegments(File[] vids, JsonObject starts, JsonObject durs, ShowInfo info) {
+    public void makeSegments(File[] vids, JsonObject starts, JsonObject durs, ShowInfo info, List<SegmentFilter> filters) {
         clear();
+        if (vids == null)
+            return;
         for(File f : vids) {
             Segment seg = new Segment(f);
             String name = seg.name;
@@ -270,6 +279,8 @@ public class Playlist extends ArrayList<Segment> {
             seg.streamStart = starts.has(name) ? starts.get(name).getAsDouble() : 0;
             seg.start = 0.0;
             seg.end = durs.get(name).getAsDouble();
+            if (filters != null)
+                seg.filters = new ArrayList<>(filters);
 
             // Use start/end provided by info metadata
             if(info != null && info.breaks != null && info.breaks.containsKey(name)) {
@@ -552,8 +563,9 @@ public class Playlist extends ArrayList<Segment> {
      */
     public String toJsonString() {
         String homeDir = Config.get("BTV_HOME") + File.separator;
-        Gson gs = new Gson();
-        return gs.toJson(this)
+        GsonBuilder gs = new GsonBuilder();
+        gs.disableHtmlEscaping(); // No need to HTML-escape special characters
+        return gs.create().toJson(this)
                 .replaceAll("},", "},\n")
                 .replaceAll(homeDir, "");
     }

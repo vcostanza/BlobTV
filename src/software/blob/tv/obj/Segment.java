@@ -1,9 +1,12 @@
 package software.blob.tv.obj;
 
 import software.blob.tv.Config;
+import software.blob.tv.filters.SegmentFilter;
 import software.blob.tv.util.Log;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Video segment (episode, commercial, interstitial, bumper)
@@ -57,6 +60,9 @@ public class Segment implements Comparable<Segment> {
 
     // Segment type
     public Format format;
+
+    // Video/audio filters
+    public List<SegmentFilter> filters;
 
     // EPISODE SPECIFIC
     // Episode number, season number, and episode part (1a = 1, 1b = 2, etc.)
@@ -174,6 +180,11 @@ public class Segment implements Comparable<Segment> {
         season = other.season;
         part = other.part;
         epType = other.epType;
+        if (other.filters != null) {
+            filters = new ArrayList<>();
+            for (SegmentFilter filter : other.filters)
+                filters.add(filter.copy());
+        }
     }
 
     public Segment(File vid) {
@@ -191,6 +202,36 @@ public class Segment implements Comparable<Segment> {
     public void setStartTime(double startSecs) {
         startTime = startSecs;
         endTime = startTime + getDuration();
+    }
+
+    /**
+     * Add a video/audio filter to this segment
+     * @param filter Filter
+     */
+    public void addFilter(SegmentFilter filter) {
+        if (filters == null)
+            filters = new ArrayList<>();
+        filters.add(filter);
+    }
+
+    /**
+     * Remove filter from this segment
+     * @param filter Filter
+     */
+    public void removeFilter(SegmentFilter filter) {
+        if (filters != null) {
+            filters.remove(filter);
+            if (filters.isEmpty())
+                filters = null;
+        }
+    }
+
+    /**
+     * Check if this segment has filters
+     * @return True if the segment has filters defined
+     */
+    public boolean hasFilters() {
+        return filters != null && !filters.isEmpty();
     }
 
     /**

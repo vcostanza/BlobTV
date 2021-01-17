@@ -147,8 +147,16 @@ public class ScheduleBuilder {
         //verifySegs(info, segs);
 
         // Create schedule slot
-        SlotBuilder sb = SlotBuilder.create(segs, info, _channel);
-        Playlist pl = sb.build();
+        Playlist pl = SlotBuilder.create(info)
+                .setSegments(segs)
+                .setShowInfo(info)
+                .setChannelInfo(_channel)
+                .setScheduleInfo(_sched, slot)
+                .build();
+        if (pl == null) {
+            pl = new Playlist();
+            Log.e(TAG, "Failed to generate playlist for time slot: " + slot.TimeSlot);
+        }
         pl.timeShift(slot.TimeSlot);
         return pl;
     }

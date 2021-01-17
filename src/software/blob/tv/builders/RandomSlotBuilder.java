@@ -1,9 +1,7 @@
 package software.blob.tv.builders;
 
-import software.blob.tv.obj.ChannelInfo;
 import software.blob.tv.obj.Playlist;
 import software.blob.tv.obj.Segment;
-import software.blob.tv.obj.ShowInfo;
 
 /**
  * Slot builder for shows with random separated episodes
@@ -12,12 +10,8 @@ public class RandomSlotBuilder extends SlotBuilder {
 
     private static final String TAG = "RandomSlotBuilder";
 
-    public RandomSlotBuilder(Playlist segments, ShowInfo info, ChannelInfo channel) {
-        super(segments, info, channel);
-    }
-
     @Override
-    public Playlist build() {
+    public Playlist buildImpl() {
         Playlist pl;
         if (_segs.hasMetaValue("episodes")) {
             pl = new Playlist(_segs, _segs.getMetaStringArray("episodes", null));

@@ -12,3 +12,4 @@ LOGO_COLORS = $BTV_HOME/js_shared/logo_colors.js
 INFO_JS = info.js
 DUR_JS = durations.js
 STARTS_JS = starts.js
+FILTERS_JS = filters.js

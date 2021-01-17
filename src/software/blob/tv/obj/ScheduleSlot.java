@@ -20,14 +20,26 @@ public class ScheduleSlot {
         this.Episodes = new ArrayList<String>(other.Episodes);
     }
 
-    public String getFormattedTime() {
+    /**
+     * Get the time this slot is played as a human-readable string
+     * @param incAMPM True to include AM/PM
+     * @return Time string
+     */
+    public String getFormattedTime(boolean incAMPM) {
         int hour = TimeSlot / 60;
         int minutes = TimeSlot % 60;
-        String ampm = "AM";
-        if (hour >= 12)
-            ampm = "PM";
+        String ampm = "";
+        if (incAMPM) {
+            ampm = "AM";
+            if (hour >= 12)
+                ampm = "PM";
+        }
         hour = hour % 12;
-        return String.format(Locale.US, "%d:%02d %s", hour == 0 ? 12 : hour, minutes, ampm);
+        return String.format(Locale.US, "%d:%02d %s", hour == 0 ? 12 : hour, minutes, ampm).trim();
+    }
+
+    public String getFormattedTime() {
+        return getFormattedTime(true);
     }
 
     public void addEpisode(String name) {

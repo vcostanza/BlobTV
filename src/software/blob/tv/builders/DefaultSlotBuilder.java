@@ -1,9 +1,7 @@
 package software.blob.tv.builders;
 
-import software.blob.tv.obj.ChannelInfo;
 import software.blob.tv.obj.Playlist;
 import software.blob.tv.obj.Segment;
-import software.blob.tv.obj.ShowInfo;
 
 /**
  * Slot builder for single-segment shows
@@ -12,12 +10,8 @@ public class DefaultSlotBuilder extends SlotBuilder {
 
     private static final String TAG = "DefaultSlotBuilder";
 
-    public DefaultSlotBuilder(Playlist segments, ShowInfo info, ChannelInfo channel) {
-        super(segments, info, channel);
-    }
-
     @Override
-    public Playlist build() {
+    public Playlist buildImpl() {
         Playlist pl;
 
         if (_segs.hasMetaValue("episodes")) {

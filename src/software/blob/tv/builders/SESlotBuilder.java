@@ -1,9 +1,7 @@
 package software.blob.tv.builders;
 
-import software.blob.tv.obj.ChannelInfo;
 import software.blob.tv.obj.Playlist;
 import software.blob.tv.obj.Segment;
-import software.blob.tv.obj.ShowInfo;
 import software.blob.tv.util.Log;
 import software.blob.tv.util.RandUtils;
 
@@ -16,12 +14,8 @@ public class SESlotBuilder extends SlotBuilder {
 
     private static final String TAG = "SESlotBuilder";
 
-    public SESlotBuilder(Playlist segments, ShowInfo info, ChannelInfo channel) {
-        super(segments, info, channel);
-    }
-
     @Override
-    public Playlist build() {
+    public Playlist buildImpl() {
         Playlist pl = new Playlist();
 
         String[] epSet;
