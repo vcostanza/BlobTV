@@ -21,6 +21,9 @@ public class FadeFilter extends SegmentFilter {
     // May be set to a negative value (fade is offset relative to the video duration)
     public float fadeOutStart;
 
+    // Fade audio in and out along with the video
+    public boolean fadeAudio;
+
     public FadeFilter() {
         super("fade");
     }
@@ -30,6 +33,7 @@ public class FadeFilter extends SegmentFilter {
         FadeFilter ret = copy instanceof FadeFilter ? (FadeFilter) copy : new FadeFilter();
         ret.fadeInEnd = this.fadeInEnd;
         ret.fadeOutStart = this.fadeOutStart;
+        ret.fadeAudio = this.fadeAudio;
         return ret;
     }
 }
