@@ -37,9 +37,9 @@ public class BlobButton extends JLabel implements MouseListener {
 
     @Override
     public void paintComponent(Graphics g) {
-        g.setColor(_fill);
+        g.setColor(isEnabled() ? _fill : Color.DARK_GRAY);
         g.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-        g.setColor(Color.WHITE);
+        g.setColor(isEnabled() ? Color.WHITE : Color.GRAY);
 
         FontMetrics fm = g.getFontMetrics();
         Rectangle2D textSize = fm.getStringBounds(getText(), g);

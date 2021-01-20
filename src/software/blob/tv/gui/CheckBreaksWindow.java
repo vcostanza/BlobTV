@@ -24,14 +24,28 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
 
     private static final String TAG = "CheckBreaksWindow";
 
+    public interface BreakCallback {
+        void forBreakTime(String key, double time);
+    }
+
     private final JTextField _showName;
     private final JList<String> _breakList;
     private final BlobCheckBox _introCB, _midsCB, _creditsCB;
+    private final BlobButton _thumbBtn;
+
+    private File _showDir;
     private ShowInfo _curInfo;
 
     public CheckBreaksWindow() {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        topPanel.setBackground(Constants.TRANSLUCENT);
+
+        JPanel topY = new JPanel();
+        topY.setLayout(new BoxLayout(topY, BoxLayout.Y_AXIS));
+        topY.setBackground(Constants.TRANSLUCENT);
 
         JPanel showPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         showPanel.setBackground(Constants.TRANSLUCENT);
@@ -42,7 +56,7 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         _showName.setHorizontalAlignment(JTextField.CENTER);
         _showName.addKeyListener(this);
         showPanel.add(_showName);
-        add(showPanel);
+        topY.add(showPanel);
 
         // Which breaks to check
         JPanel cbPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -54,7 +68,16 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         cbPanel.add(_midsCB);
         _creditsCB = new BlobCheckBox("Credits");
         cbPanel.add(_creditsCB);
-        add(cbPanel);
+        topY.add(cbPanel);
+
+        topPanel.add(topY);
+
+        _thumbBtn = new BlobButton("Generate Thumbnails");
+        _thumbBtn.setEnabled(false);
+        _thumbBtn.setOnClick(this::generateThumbs);
+        topPanel.add(_thumbBtn);
+
+        add(topPanel);
 
         JPanel breakPanel = new JPanel(new FlowLayout());
         breakPanel.setBackground(Constants.TRANSLUCENT);
@@ -75,7 +98,8 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         });
         _breakList.addKeyListener(this);
         JScrollPane scrollPane = new JScrollPane(_breakList);
-        scrollPane.setPreferredSize(new Dimension (480, 480));
+        scrollPane.setPreferredSize(new Dimension(512, 512));
+        scrollPane.setBorder(null);
         breakPanel.add(scrollPane);
         add(breakPanel);
     }
@@ -87,32 +111,38 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
+    /**
+     * Find the matching show based on user entry
+     */
     private void beginBreakCheck() {
         // Search for nearest matching show
         String showName = _showName.getText().toLowerCase(Locale.US);
         if (showName.isEmpty())
             return;
+
         File showDir = Config.getFile("SHOW_DIR");
         File[] shows = showDir.listFiles();
         if (shows == null)
             return;
-        File show = null;
+
+        _showDir = null;
         for (File s : shows) {
             String sName = s.getName().toLowerCase(Locale.US);
             if (sName.equals(showName)) {
-                show = s;
+                _showDir = s;
                 break;
             } else if (sName.contains(showName))
-                show = s;
+                _showDir = s;
         }
-        if (show == null) {
+        _thumbBtn.setEnabled(_showDir != null);
+        if (_showDir == null) {
             Log.e(TAG, "Failed to find show: " + _showName.getText());
             return;
         }
-        _showName.setText(show.getName());
+        _showName.setText(_showDir.getName());
 
         // Load episodes
-        File infoFile = new File(show, "info.js");
+        File infoFile = new File(_showDir, "info.js");
         if(!infoFile.exists()) {
             Log.e(TAG, "Failed to find show info file: " + infoFile);
             return;
@@ -125,12 +155,12 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
             return;
         }
         if (_curInfo.breaks == null) {
-            Log.e(TAG, "Show \"" + show.getName() + "\" has no breaks defined.");
+            Log.e(TAG, "Show \"" + _showDir.getName() + "\" has no breaks defined.");
             return;
         }
 
         // Load segments
-        Playlist epList = new Playlist(show);
+        Playlist epList = new Playlist(_showDir);
         Collections.sort(epList);
 
         // Update list
@@ -148,6 +178,26 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
         _breakList.setListData(eps.toArray(new String[0]));
     }
 
+    /**
+     * Loop through each break time in a set
+     * @param br Segment break times
+     * @param cb Callback to invoke for each time
+     */
+    private void forEachBreakTime(ShowInfo.Break br, BreakCallback cb) {
+        for (Map.Entry<String, Double> e : br.entrySet()) {
+            String key = e.getKey();
+            double breakTime = br.get(key);
+            if(key.equals("intro") && !_introCB.isSelected() ||
+                    key.equals("credits") && !_creditsCB.isSelected() ||
+                    key.startsWith("episode_") && !_midsCB.isSelected() || key.startsWith("episode_a"))
+                continue;
+            cb.forBreakTime(key, breakTime);
+        }
+    }
+
+    /**
+     * Preview a break in MPV
+     */
     private void checkBreak() {
         String epName = String.valueOf(_breakList.getSelectedValue());
         beginBreakCheck();
@@ -158,12 +208,7 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
                 Log.e(TAG, "Missing episode " + epName);
                 return;
             }
-            for(String key : br.keySet()) {
-                if(key.equals("intro") && !_introCB.isSelected() ||
-                        key.equals("credits") && !_creditsCB.isSelected() ||
-                        key.startsWith("episode_") && !_midsCB.isSelected() || key.startsWith("episode_a"))
-                    continue;
-                double breakTime = br.get(key);
+            forEachBreakTime(br, (key, breakTime) -> {
                 double startTime = Math.max(0, breakTime - 1);
                 double endTime = breakTime + 4;
                 Log.d(TAG, key + ": " + breakTime);
@@ -182,8 +227,65 @@ public class CheckBreaksWindow extends JPanel implements KeyListener {
                 } catch (Exception exc) {
                     Log.e(TAG, "Error: ", exc);
                 }
-            }
+            });
         }
+    }
+
+    /**
+     * Generate thumbnails taken at each break for easily previewing which breaks are good or not
+     */
+    private void generateThumbs() {
+        beginBreakCheck();
+        if (_curInfo == null || _showDir == null)
+            return;
+
+        // Thumbnails are saved under the "Break Thumbnails" directory
+        final File thumbDir = new File(_showDir, "Break Thumbnails");
+        if (!thumbDir.exists() && !thumbDir.mkdirs())
+            return;
+
+        _thumbBtn.setEnabled(false);
+
+        for (Map.Entry<String, ShowInfo.Break> e : _curInfo.breaks.entrySet()) {
+
+            final String name = e.getKey();
+            ShowInfo.Break br = e.getValue();
+
+            final File vid = new File(_showDir, name + ".mp4");
+            if (!vid.exists())
+                continue;
+
+            forEachBreakTime(br, (key, breakTime) -> {
+
+                String imgName = name + " " + key + " [" + breakTime + "].png";
+                File imgFile = new File(thumbDir, imgName);
+                if (imgFile.exists())
+                    return;
+
+                Log.d(TAG, "Generating thumb for " + name + " -> " + key + ": " + breakTime);
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("ffmpeg",
+                            "-ss", String.valueOf(breakTime),
+                            "-i", vid.getAbsolutePath(),
+                            "-frames:v", "1",
+                            imgFile.getAbsolutePath());
+                    //pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                    //pb.redirectError(ProcessBuilder.Redirect.INHERIT);
+                    pb.start();
+                } catch (Exception exc) {
+                    Log.e(TAG, "Error: ", exc);
+                }
+            });
+        }
+
+        // Show the break thumbnails folder
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(thumbDir);
+        } catch (Exception ignore) {
+        }
+
+        _thumbBtn.setEnabled(true);
     }
 
     @Override

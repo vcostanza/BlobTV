@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
  */
 public class Log {
 
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
     public static void d(String tag, String msg, Throwable e) {
         log(tag, msg, e, "DEBUG");
     }
@@ -33,7 +35,6 @@ public class Log {
     }
 
     private static void log(String tag, String msg, Throwable e, String type) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         PrintStream stream = type.equals("ERROR") ? System.err : System.out;
         stream.println(sdf.format(System.currentTimeMillis()) + " / " + tag + " [" + type.charAt(0) + "]: " + msg);
         if(e != null)

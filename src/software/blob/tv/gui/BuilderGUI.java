@@ -9,6 +9,7 @@ import software.blob.tv.obj.Playlist;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * GUI for schedule builder
@@ -22,8 +23,10 @@ public class BuilderGUI extends JPanel {
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        ArrayList<Component> components = new ArrayList<>();
+
         final BlobButton genSched = new BlobButton("Generate Schedule");
-        add(genSched);
+        components.add(genSched);
         genSched.setOnClick(() -> {
             genSched.setText("Generating...");
             genSched.setEnabled(false);
@@ -38,12 +41,19 @@ public class BuilderGUI extends JPanel {
         });
 
         final BlobButton checkBreaks = new BlobButton("Check Breaks");
-        add(checkBreaks);
+        components.add(checkBreaks);
         checkBreaks.setOnClick(this::openBreaksWindow);
 
         final BlobButton commGraph = new BlobButton("Commercial Graph");
-        add(commGraph);
+        components.add(commGraph);
         commGraph.setOnClick(this::graphCommercials);
+
+        // Insert separators between components
+        for (Component c : components) {
+            addSeparator();
+            add(c);
+        }
+        addSeparator();
     }
 
     @Override
@@ -72,5 +82,11 @@ public class BuilderGUI extends JPanel {
         f.pack();
         f.setLocationRelativeTo(null);
         f.setVisible(true);
+    }
+
+    private void addSeparator() {
+        JSeparator sep = new JSeparator();
+        sep.setUI(null);
+        add(sep);
     }
 }
