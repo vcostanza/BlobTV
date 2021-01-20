@@ -83,7 +83,7 @@ public abstract class SlotBuilder {
     // Handle intro and credits
     protected void finalizePlaylist(Playlist pl) {
         pl.setSlotSize(_segs.getSlotSize());
-        boolean skipIntro = false, skipCredits = false;
+        boolean skipIntro = false, skipBumper = false, skipCredits = false;
         if(_info.breaks != null) {
             // Check for intro skip
             for (Segment s : pl) {
@@ -91,7 +91,9 @@ public abstract class SlotBuilder {
                 if (br != null) {
                     if (br.hasIntro)
                         skipIntro = true;
-                    else if (br.hasCredits)
+                    if (br.hasBumper)
+                        skipBumper = true;
+                    if (br.hasCredits)
                         skipCredits = true;
                 }
             }
@@ -122,7 +124,8 @@ public abstract class SlotBuilder {
         }
 
         // Insert mid-break bumper (if they exist)
-        insertBreakBumpers(pl);
+        if (!skipBumper)
+            insertBreakBumpers(pl);
 
         // Commercials (lowest priority)
         insertCommercials(pl);

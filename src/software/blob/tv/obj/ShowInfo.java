@@ -94,6 +94,7 @@ public class ShowInfo {
         public static final String EP_D = "episode_d";
         public static final String EP_E = "episode_e";
         public static final String HAS_INTRO = "HasIntro";
+        public static final String HAS_BUMPER = "HasBumper";
         public static final String HAS_CREDITS = "HasCredits";
 
         private static final String[] TYPES = {
@@ -104,7 +105,7 @@ public class ShowInfo {
                 EP_B, EP_C, EP_D, EP_E
         };
 
-        public boolean hasIntro, hasCredits = false;
+        public boolean hasIntro, hasBumper, hasCredits;
 
         public Break(JsonObject breakjs) {
             for(String s : TYPES) {
@@ -118,6 +119,8 @@ public class ShowInfo {
             }
             if (breakjs.has(HAS_INTRO))
                 hasIntro = breakjs.get(HAS_INTRO).getAsBoolean();
+            if (breakjs.has(HAS_BUMPER))
+                hasBumper = breakjs.get(HAS_BUMPER).getAsBoolean();
             if (breakjs.has(HAS_CREDITS))
                 hasCredits = breakjs.get(HAS_CREDITS).getAsBoolean();
         }
