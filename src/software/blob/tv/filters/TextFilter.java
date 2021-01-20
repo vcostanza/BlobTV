@@ -155,9 +155,9 @@ public class TextFilter extends PositionFilter {
             tf.size = size;
             tf.y += (tf.size * 1.25) * l;
 
-            // Remove semi-transient values that the player doesn't need
-            this.wrap = null;
-            this.wraps = this.sizes = null;
+            // No longer applicable since the line has been wrapped
+            tf.wrap = null;
+            tf.wraps = tf.sizes = null;
 
             ret.add(tf);
         }
