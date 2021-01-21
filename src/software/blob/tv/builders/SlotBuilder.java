@@ -82,10 +82,13 @@ public abstract class SlotBuilder {
 
     // Handle intro and credits
     protected void finalizePlaylist(Playlist pl) {
+
+        // Set the size of the time slot in minutes
         pl.setSlotSize(_segs.getSlotSize());
+
+        // Check if we should skip adding a separate intro, bumper, or credits segment
         boolean skipIntro = false, skipBumper = false, skipCredits = false;
         if(_info.breaks != null) {
-            // Check for intro skip
             for (Segment s : pl) {
                 ShowInfo.Break br = _info.breaks.get(s.name);
                 if (br != null) {
@@ -106,6 +109,12 @@ public abstract class SlotBuilder {
             pl.add(0.0, intro, true);
         if(credits != null && !skipCredits)
             pl.add(0.0, credits);
+
+        // Propagate the crop-allowed flag to the episode segments
+        if (_info.allowCrop) {
+            for (Segment s : pl)
+                s.allowCrop = true;
+        }
 
         // Insert schedule bumper w/ appropriate upcoming and later show
         if (_channel.bumps != null)

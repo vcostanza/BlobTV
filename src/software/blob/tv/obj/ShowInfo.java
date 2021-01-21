@@ -17,19 +17,34 @@ public class ShowInfo {
 
     private static final String TAG = "ShowInfo";
 
+    // Full runtime of the show in minutes (multiple of 15)
     public static final String RUNTIME = "Runtime";
+
+    // True if each episode is made up of separate video files
     public static final String SEPARATED = "SeparatedEps";
+
+    // True to fill the time slot with random episode segments
     public static final String RANDOMIZED = "Randomized";
+
+    // True to allow 4:3 crop for a 16:9 show
+    public static final String ALLOW_CROP = "AllowCrop";
+
+    // Video to insert as an intro before each episode
     public static final String INTRO = "Intro";
+
+    // Video to insert as credits after each episode
     public static final String CREDITS = "Credits";
+
+    // Break definitions (non-separated only)
     public static final String BREAKS = "Breaks";
+
+    // Episode definitions (separated only)
     public static final String EPISODES = "Episodes";
 
     protected JsonObject _js;
     public String showDir;
     //public int runTime = 30;
-    public boolean randomized = false,
-            separatedEps = false;
+    public boolean randomized = false, separatedEps = false, allowCrop = false;
     public File introVid, creditsVid;
     public String[][] episodes;
     public Map<String, Break> breaks;
@@ -43,6 +58,8 @@ public class ShowInfo {
             separatedEps = _js.get(SEPARATED).getAsBoolean();
         if(_js.has(RANDOMIZED))
             randomized = _js.get(RANDOMIZED).getAsBoolean();
+        if (_js.has(ALLOW_CROP))
+            allowCrop = _js.get(ALLOW_CROP).getAsBoolean();
         if(_js.has(INTRO))
             introVid = new File(showDir, _js.get(INTRO).getAsString());
         if(_js.has(CREDITS))

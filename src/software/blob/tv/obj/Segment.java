@@ -58,6 +58,9 @@ public class Segment implements Comparable<Segment> {
     // Start and end of segment (relative to midnight in seconds)
     public double startTime, endTime;
 
+    // True to allow 4:3 cropping (assuming the video is 16:9)
+    public Boolean allowCrop;
+
     // Segment type
     public Format format;
 
@@ -175,6 +178,7 @@ public class Segment implements Comparable<Segment> {
         end = other.end;
         startTime = other.startTime;
         endTime = other.endTime;
+        allowCrop = other.allowCrop;
         format = other.format;
         episode = other.episode;
         season = other.season;
